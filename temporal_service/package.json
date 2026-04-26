@@ -1,0 +1,18 @@
+{
+	"name": "temporal_service",
+	"version": "1.0.0",
+	"type": "commonjs",
+	"main": "src/index.js",
+	"scripts": {
+		"start:api": "node src/index.js",
+		"start:worker": "node src/worker.js"
+	},
+	"dependencies": {
+		"@temporalio/client": "^1.11.6",
+		"@temporalio/worker": "^1.11.6",
+		"@temporalio/workflow": "^1.11.6",
+		"axios": "^1.8.4",
+		"dotenv": "^16.4.5",
+		"express": "^4.21.2"
+	}
+}

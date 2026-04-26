@@ -26,6 +26,31 @@ const upload = multer({
 
 const router = Router();
 
+async function startTemporalAudioWorkflow(userId: string, projectId: string) {
+	const temporalServiceBaseUrl = process.env.TEMPORAL_SERVICE_BASE_URL;
+	if (!temporalServiceBaseUrl) {
+		console.warn(
+			"TEMPORAL_SERVICE_BASE_URL is not configured. Skipping Temporal workflow start."
+		);
+		return null;
+	}
+
+	const startWorkflowUrl = `${temporalServiceBaseUrl}/workflows/audio-processing/start`;
+	const response = await axios.post(
+		startWorkflowUrl,
+		{
+			user_id: userId,
+			project_id: projectId,
+		},
+		{
+			headers: {
+				"Content-Type": "application/json",
+			},
+		}
+	);
+	return response?.data || null;
+}
+
 // Upload Route
 router.post(
 	"",
@@ -78,9 +103,23 @@ router.post(
 					`error while calling create user project db api: ${err.message}`
 				);
 			}
+
+			let temporalWorkflowDetails = null;
+			try {
+				temporalWorkflowDetails = await startTemporalAudioWorkflow(
+					userId,
+					projectId
+				);
+			} catch (err: any) {
+				console.error(
+					`error while starting temporal workflow: ${err.message}`
+				);
+			}
+
 			res.status(200).send({
 				message: "File uploaded successfully!",
 				url: data.Location,
+				temporal_workflow: temporalWorkflowDetails,
 			});
 		} catch (err) {
 			console.error("Error uploading file:", err);
