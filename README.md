@@ -181,7 +181,7 @@ Entry: `index.js`
 
 Queue consumer (`SQSConsumer.js`):
 
-- Polls hardcoded `story_queue`.
+- Polls `story_queue`.
 - Reads `file_url` from each message.
 - Downloads transcript text from S3 and processes via `processS3File`.
 - Deletes message after processing.
@@ -339,7 +339,7 @@ From dashboard project selection/task view:
 
 ## 7. Environment and Runtime Notes
 
-- Hardcoded service URLs are present in frontend/backend routes; centralize with env vars for cleaner multi-environment deploys.
+- Service URLs are present in frontend/backend routes; centralize with env vars for cleaner multi-environment deploys.
 - Queue consumers (`transcription_service`, `OpenAI-service`) are infinite loops and should be run as managed workers (PM2/systemd/container).
 - Current architecture is event-driven but mostly at-least-once; idempotency and retry policy control are partly implicit.
 - Temporal service adds workflow state and failure visibility on top of existing queue-driven processing.
